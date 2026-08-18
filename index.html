@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
   <title>Vídeo</title>
 
   <style>
@@ -25,29 +25,12 @@
       inset: 0;
     }
 
-    #video {
+    video {
       width: 100vw;
       height: 100dvh;
+      display: block;
       object-fit: contain;
       background: #000;
-      display: block;
-    }
-
-    #fullscreenHint {
-      position: fixed;
-      bottom: 25px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 10px 17px;
-      border-radius: 22px;
-      background: rgba(0,0,0,.55);
-      color: white;
-      font-family: Arial, sans-serif;
-      font-size: 13px;
-      opacity: .8;
-      z-index: 10;
-      pointer-events: none;
-      transition: opacity .4s;
     }
   </style>
 </head>
@@ -62,43 +45,24 @@
     webkit-playsinline
     preload="auto"
     loop
+    disablepictureinpicture
   >
     <source src="video.mp4" type="video/mp4">
   </video>
 
-  <div id="fullscreenHint">
-    Toque para tela cheia
-  </div>
-
   <script>
     const video = document.getElementById("video");
-    const hint = document.getElementById("fullscreenHint");
 
     video.muted = true;
     video.defaultMuted = true;
 
-    function iniciarVideo() {
+    function iniciar() {
       video.play().catch(() => {});
     }
 
-    document.addEventListener("DOMContentLoaded", iniciarVideo);
-    window.addEventListener("load", iniciarVideo);
-    video.addEventListener("canplay", iniciarVideo);
-
-    async function telaCheia() {
-      try {
-        if (document.documentElement.requestFullscreen) {
-          await document.documentElement.requestFullscreen();
-        } else if (video.webkitEnterFullscreen) {
-          video.webkitEnterFullscreen();
-        }
-
-        hint.style.opacity = "0";
-      } catch (e) {}
-    }
-
-    document.body.addEventListener("click", telaCheia, { once: true });
-    document.body.addEventListener("touchend", telaCheia, { once: true });
+    document.addEventListener("DOMContentLoaded", iniciar);
+    window.addEventListener("load", iniciar);
+    video.addEventListener("canplay", iniciar);
   </script>
 
 </body>
