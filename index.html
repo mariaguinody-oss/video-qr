@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Vídeo</title>
 
   <style>
@@ -17,128 +18,87 @@
       height: 100%;
       background: #000;
       overflow: hidden;
-      font-family: Arial, sans-serif;
     }
 
-    .container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: #000;
+    body {
+      position: fixed;
+      inset: 0;
     }
 
-    video {
-      width: 100%;
-      height: 100%;
+    #video {
+      width: 100vw;
+      height: 100dvh;
       object-fit: contain;
       background: #000;
+      display: block;
     }
 
-    #soundButton,
-    #playButton {
-      position: absolute;
+    #fullscreenHint {
+      position: fixed;
+      bottom: 25px;
       left: 50%;
       transform: translateX(-50%);
-      padding: 14px 22px;
-      border: 1px solid rgba(255,255,255,0.5);
-      border-radius: 30px;
-      background: rgba(0,0,0,0.70);
+      padding: 10px 17px;
+      border-radius: 22px;
+      background: rgba(0,0,0,.55);
       color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      opacity: .8;
       z-index: 10;
-      white-space: nowrap;
-    }
-
-    #soundButton {
-      bottom: 7%;
-    }
-
-    #playButton {
-      top: 50%;
-      transform: translate(-50%, -50%);
-      display: none;
-      font-size: 18px;
-      padding: 18px 28px;
-    }
-
-    .hidden {
-      display: none !important;
+      pointer-events: none;
+      transition: opacity .4s;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+  <video
+    id="video"
+    autoplay
+    muted
+    playsinline
+    webkit-playsinline
+    preload="auto"
+    loop
+  >
+    <source src="video.mp4" type="video/mp4">
+  </video>
 
-    <video
-      id="video"
-      autoplay
-      muted
-      playsinline
-      webkit-playsinline
-      preload="auto"
-    >
-      <source src="video.mp4" type="video/mp4">
-    </video>
-
-    <button id="playButton">
-      ▶ INICIAR VÍDEO
-    </button>
-
-    <button id="soundButton">
-      🔊 TOQUE PARA ATIVAR O SOM
-    </button>
-
+  <div id="fullscreenHint">
+    Toque para tela cheia
   </div>
 
   <script>
     const video = document.getElementById("video");
-    const soundButton = document.getElementById("soundButton");
-    const playButton = document.getElementById("playButton");
+    const hint = document.getElementById("fullscreenHint");
 
     video.muted = true;
     video.defaultMuted = true;
 
-    function tentarAutoplay() {
-      video.muted = true;
-
-      const tentativa = video.play();
-
-      if (tentativa !== undefined) {
-        tentativa
-          .then(() => {
-            playButton.classList.add("hidden");
-          })
-          .catch(() => {
-            playButton.style.display = "block";
-          });
-      }
+    function iniciarVideo() {
+      video.play().catch(() => {});
     }
 
-    document.addEventListener("DOMContentLoaded", tentarAutoplay);
-    window.addEventListener("load", tentarAutoplay);
-    video.addEventListener("loadedmetadata", tentarAutoplay);
-    video.addEventListener("canplay", tentarAutoplay);
+    document.addEventListener("DOMContentLoaded", iniciarVideo);
+    window.addEventListener("load", iniciarVideo);
+    video.addEventListener("canplay", iniciarVideo);
 
-    playButton.addEventListener("click", () => {
-      video.muted = false;
-      video.volume = 1;
+    async function telaCheia() {
+      try {
+        if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        } else if (video.webkitEnterFullscreen) {
+          video.webkitEnterFullscreen();
+        }
 
-      video.play().then(() => {
-        playButton.classList.add("hidden");
-        soundButton.classList.add("hidden");
-      });
-    });
+        hint.style.opacity = "0";
+      } catch (e) {}
+    }
 
-    soundButton.addEventListener("click", () => {
-      video.muted = false;
-      video.volume = 1;
-      video.play();
-      soundButton.classList.add("hidden");
-    });
+    document.body.addEventListener("click", telaCheia, { once: true });
+    document.body.addEventListener("touchend", telaCheia, { once: true });
   </script>
 
 </body>
