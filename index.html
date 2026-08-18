@@ -1,69 +1,83 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
-  <title>Vídeo</title>
+<meta charset="UTF-8">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: #000;
-      overflow: hidden;
-    }
+<meta name="theme-color" content="#000000">
 
-    body {
-      position: fixed;
-      inset: 0;
-    }
+<title>Vídeo</title>
 
-    video {
-      width: 100vw;
-      height: 100dvh;
-      display: block;
-      object-fit: contain;
-      background: #000;
-    }
-  </style>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+</style>
 </head>
 
 <body>
 
-  <video
-    id="video"
-    autoplay
-    muted
-    playsinline
-    webkit-playsinline
-    preload="auto"
-    loop
-    disablepictureinpicture
-  >
-    <source src="video.mp4" type="video/mp4">
-  </video>
+<video
+  id="video"
+  autoplay
+  muted
+  playsinline
+  webkit-playsinline
+  preload="auto"
+  disablepictureinpicture
+>
+  <source src="video.mp4" type="video/mp4">
+</video>
 
-  <script>
-    const video = document.getElementById("video");
+<script>
+const video = document.getElementById("video");
 
-    video.muted = true;
-    video.defaultMuted = true;
+video.muted = true;
+video.defaultMuted = true;
+video.setAttribute("muted", "");
+video.setAttribute("playsinline", "");
+video.setAttribute("webkit-playsinline", "");
 
-    function iniciar() {
-      video.play().catch(() => {});
-    }
+function iniciarVideo() {
+  if (video.paused) {
+    video.play().catch(() => {});
+  }
+}
 
-    document.addEventListener("DOMContentLoaded", iniciar);
-    window.addEventListener("load", iniciar);
-    video.addEventListener("canplay", iniciar);
-  </script>
+document.addEventListener("DOMContentLoaded", iniciarVideo);
+window.addEventListener("load", iniciarVideo);
+
+video.addEventListener("loadedmetadata", iniciarVideo);
+video.addEventListener("loadeddata", iniciarVideo);
+video.addEventListener("canplay", iniciarVideo);
+video.addEventListener("canplaythrough", iniciarVideo);
+
+setTimeout(iniciarVideo, 100);
+setTimeout(iniciarVideo, 300);
+setTimeout(iniciarVideo, 700);
+setTimeout(iniciarVideo, 1200);
+
+</script>
 
 </body>
 </html>
